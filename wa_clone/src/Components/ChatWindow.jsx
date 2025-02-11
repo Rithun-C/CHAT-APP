@@ -4,8 +4,11 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { db } from '../../firebase.config';
 import { useAuth } from './AuthContext';
+import { useRef } from 'react';  // Add this
+
 
 function ChatWindow() {
+  const chatContainerRef = useRef(null);
   const params = useParams();
   const [msg, setmsg] = useState("");
   const [secondUser, setsecondUser] = useState({});
@@ -35,6 +38,12 @@ function ChatWindow() {
       msgUnsubscribe();
     };
   }, [receiverId])
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [msgList]); 
+  
 
   const handleSendMsg = async () => {
     if (msg) {
@@ -101,7 +110,7 @@ function ChatWindow() {
         </div>
 
       </div>
-      <div className="flex-grow flex flex-col gap-12 p-6 overflow-y-scroll bg-yellow-50">
+      <div ref={chatContainerRef} className="flex-grow flex flex-col gap-12 p-6 overflow-y-scroll bg-yellow-50">
         {/* chat messages */}
         {/*... */}
 
